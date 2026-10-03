@@ -11,6 +11,7 @@ license = "GPL-3.0-only AND BSD-3-Clause"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 requires-python = ">=3.11"
 dependencies = [
+  "setuptools>=77,<81", # EDS-NLP 0.17 imports pkg_resources at runtime.
   "confit>=0.7.3,<1",
   "edsnlp>=0.17,<0.18",
   "spacy>=3.8,<4",

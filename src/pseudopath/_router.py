@@ -13,6 +13,7 @@ from array import array
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass, field
 from itertools import pairwise
+from numbers import Real
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -43,6 +44,13 @@ class RouterTraining:
     ngrams: tuple[int, ...] = (3, 4, 5)
 
     def __post_init__(self) -> None:
+        for name in ("dimension", "epochs", "seed"):
+            if type(getattr(self, name)) is not int:
+                raise TypeError(f"router {name} must be an integer")
+        if not isinstance(self.ngrams, tuple) or any(type(size) is not int for size in self.ngrams):
+            raise TypeError("router ngrams must be a tuple of integers")
+        if isinstance(self.learning_rate, bool) or not isinstance(self.learning_rate, Real):
+            raise TypeError("router learning_rate must be numeric")
         if self.dimension < 1024:
             raise ValueError("router dimension must be >= 1024")
         if self.epochs < 1:

@@ -165,3 +165,19 @@ def test_unknown_preset_and_component_fail_before_loading_weights() -> None:
         create_preset("eds-pseudo")
     with pytest.raises(ValueError, match="unknown model components"):
         create_preset("camembert", model_config={"typo": {}})
+
+
+def test_wrong_training_type_does_not_invalidate_tok2vec():
+    flow = PseudoPath.from_preset("tok2vec")
+    doc = flow.make_doc("Luc\nligne ordinaire")
+    doc.ents = (doc.char_span(0, 3, label="NOM"),)
+    with pytest.raises(TypeError, match="Tok2VecTraining"):
+        flow.fit([doc], [doc], training=TransformerTraining())
+    assert not flow._failed
+    flow.fit(
+        [doc],
+        [doc],
+        training=Tok2VecTraining(steps=1, validation_interval=1),
+        router=RouterTraining(dimension=1024, epochs=1),
+    )
+    assert flow._ready

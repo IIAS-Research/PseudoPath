@@ -166,3 +166,48 @@ def test_custom_training_config_is_forwarded_and_can_be_saved(tmp_path):
 def test_invalid_threshold_is_not_clamped():
     with pytest.raises(ValueError, match="threshold"):
         PseudoPath(FakeModel(), adapter=FakeAdapter(), routing=1.1)
+
+
+@pytest.mark.parametrize("invalid", ["validation", "one-class", "context"])
+def test_corpus_errors_are_rejected_before_training_and_preserve_state(invalid):
+    flow = PseudoPath(FakeModel(), adapter=FakeAdapter())
+    train = [annotated(flow, "Luc est présent\nligne ordinaire")]
+    settings = RouterTraining(dimension=1024, epochs=1)
+    flow.fit(train, train, router=settings)
+    thresholds = dict(flow._thresholds)
+    weights = flow._router.weights.tobytes()
+    if invalid == "validation":
+        bad_train, bad_validation = train, [flow.make_doc("sans annotation")]
+    elif invalid == "one-class":
+        bad_train = bad_validation = [annotated(flow, "Luc")]
+    else:
+        bad = annotated(flow, "Luc\nligne ordinaire")
+        bad._.context = {"NOM": "Luc"}
+        bad_train = bad_validation = [bad]
+    with pytest.raises(ValueError):
+        flow.fit(bad_train, bad_validation, router=settings)
+    assert flow.model.phases == 1
+    assert flow._thresholds == thresholds
+    assert flow._router.weights.tobytes() == weights
+    assert flow.predict("Luc")[0].text == "Luc"
+    flow.fit(train, train, router=settings)
+    assert flow.model.phases == 2
+
+
+@pytest.mark.parametrize("threshold", [float("nan"), float("inf"), -0.1, 1.1, True, "fast", None])
+def test_invalid_artifact_thresholds_rejected_before_model_loading(tmp_path, threshold):
+    flow = PseudoPath(FakeModel(), adapter=FakeAdapter())
+    train = [annotated(flow, "Luc\nligne ordinaire")]
+    flow.fit(train, train, router=RouterTraining(dimension=1024, epochs=1))
+    path = tmp_path / "artifact"
+    flow.to_disk(path)
+    manifest_path = path / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["thresholds"]["balanced"] = threshold
+    manifest_path.write_text(json.dumps(manifest))
+
+    def loader(path):
+        pytest.fail("model loader must not be called for an invalid artifact")
+
+    with pytest.raises((ValueError, TypeError)):
+        PseudoPath.from_disk(path, adapter=FakeAdapter(), model_loader=loader)

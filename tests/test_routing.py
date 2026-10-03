@@ -190,3 +190,17 @@ def test_merge_preserves_transitive_coverage_and_keeps_adjacent_entities():
         (EntityPrediction(4, 10, "MAIL"), EntityPrediction(12, 15, "TEL")),
     )
     assert spans == (EntityPrediction(0, 12, "NOM"), EntityPrediction(12, 15, "TEL"))
+
+
+@pytest.mark.parametrize(
+    "settings",
+    [
+        {"dimension": 1024.5},
+        {"epochs": 1.5},
+        {"seed": True},
+        {"ngrams": (True,)},
+    ],
+)
+def test_router_rejects_non_integer_settings(settings):
+    with pytest.raises(TypeError):
+        RouterTraining(**settings)

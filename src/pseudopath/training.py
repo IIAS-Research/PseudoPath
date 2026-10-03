@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, fields
+from numbers import Real
 from typing import Literal
 
 from ._routing import EntityPrediction
@@ -59,6 +60,31 @@ class TransformerTraining:
     checkpoint_selection: Literal["best", "last"] = "best"
 
     def __post_init__(self) -> None:
+        _validate_integer_settings(
+            self,
+            (
+                "steps",
+                "validation_interval",
+                "seed",
+                "batch_words",
+                "grad_accumulation_tokens",
+                "max_length",
+            ),
+        )
+        _validate_labels(self.selection_labels)
+        for name in (
+            "task_lr",
+            "transformer_lr",
+            "warmup_fraction",
+            "weight_decay",
+            "adam_epsilon",
+            "grad_clip",
+        ):
+            _validate_real(name, getattr(self, name))
+        if not isinstance(self.adam_betas, (tuple, list)) or len(self.adam_betas) != 2:
+            raise ValueError("adam_betas must contain two numeric values")
+        for value in self.adam_betas:
+            _validate_real("adam_betas", value)
         if self.steps < 1 or self.validation_interval < 1:
             raise ValueError("steps and validation_interval must be positive")
         if self.checkpoint_selection not in {"best", "last"}:
@@ -125,6 +151,10 @@ class Tok2VecTraining:
     checkpoint_selection: Literal["best", "last"] = "best"
 
     def __post_init__(self) -> None:
+        _validate_integer_settings(self, ("steps", "validation_interval", "seed", "batch_size"))
+        _validate_labels(self.selection_labels)
+        for name in ("learning_rate", "dropout", "l2", "grad_clip"):
+            _validate_real(name, getattr(self, name))
         if self.steps < 1 or self.validation_interval < 1:
             raise ValueError("steps and validation_interval must be positive")
         if self.checkpoint_selection not in {"best", "last"}:
@@ -164,3 +194,23 @@ def _training_metadata(settings: TransformerTraining | Tok2VecTraining) -> dict[
     if callable(settings.selection_metric):
         metadata["selection_metric"] = "custom"
     return metadata
+
+
+def _validate_integer_settings(settings: object, names: tuple[str, ...]) -> None:
+    for name in names:
+        if type(getattr(settings, name)) is not int:
+            raise TypeError(f"{name} must be an integer")
+
+
+def _validate_labels(labels: tuple[str, ...] | None) -> None:
+    if labels is not None and (
+        not isinstance(labels, (tuple, list))
+        or not labels
+        or any(not isinstance(label, str) or not label for label in labels)
+    ):
+        raise ValueError("selection_labels must contain distinct nonempty string labels")
+
+
+def _validate_real(name: str, value: object) -> None:
+    if isinstance(value, bool) or not isinstance(value, Real):
+        raise TypeError(f"{name} must be numeric")

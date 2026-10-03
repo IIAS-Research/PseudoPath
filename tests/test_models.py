@@ -78,3 +78,34 @@ def test_transformer_output_requires_ner_span_group() -> None:
         adapter.predict(model, ["No entity."])
     document.spans["pseudo-ml"] = ()
     assert adapter.predict(model, ["No entity."]) == ((),)
+
+
+@pytest.mark.parametrize("kind", ["tok2vec", "transformer"])
+@pytest.mark.parametrize(
+    "settings",
+    [{"steps": 1.5}, {"validation_interval": True}, {"seed": 2.5}, {"selection_labels": (123,)}],
+)
+def test_training_rejects_invalid_setting_types(kind, settings):
+    from pseudopath import Tok2VecTraining, TransformerTraining
+
+    cls = Tok2VecTraining if kind == "tok2vec" else TransformerTraining
+    with pytest.raises((ValueError, TypeError)):
+        cls(**settings)
+
+
+@pytest.mark.parametrize(
+    "kind,settings",
+    [
+        ("tok2vec", {"batch_size": True}),
+        ("tok2vec", {"learning_rate": True}),
+        ("transformer", {"max_length": True}),
+        ("transformer", {"adam_betas": (0.9,)}),
+        ("transformer", {"task_lr": "0.01"}),
+    ],
+)
+def test_training_rejects_invalid_batch_and_numeric_values(kind, settings):
+    from pseudopath import Tok2VecTraining, TransformerTraining
+
+    cls = Tok2VecTraining if kind == "tok2vec" else TransformerTraining
+    with pytest.raises((ValueError, TypeError)):
+        cls(**settings)

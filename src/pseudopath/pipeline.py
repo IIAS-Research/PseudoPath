@@ -14,11 +14,11 @@ from typing import Any, Generic, Self, TypeVar
 
 from spacy.tokens import Doc, Span
 
-from ._calibration import calibrate_profiles
-from ._router import LineRouter, RouterTraining
+from ._calibration import _gold_prefixes, calibrate_profiles
+from ._router import LineRouter, RouterTraining, _training_rows
 from ._routing import EntityPrediction, route_document
 from ._rules import _FixedRules
-from .adapters import NERAdapter
+from .adapters import EdsNLPAdapter, NERAdapter, SpacyNERAdapter
 from .training import Tok2VecTraining, TransformerTraining, _training_metadata
 
 _RUNTIME_PACKAGES = ("pseudopath", "edsnlp", "spacy")
@@ -187,6 +187,26 @@ class PseudoPath(Generic[ModelT]):
                 != (self._router.config.dimension, self._router.config.ngrams)
             ):
                 raise ValueError("router feature dimensions and ngrams cannot change on fit")
+        expected_training = (
+            Tok2VecTraining
+            if isinstance(self.adapter, SpacyNERAdapter)
+            else TransformerTraining
+            if isinstance(self.adapter, EdsNLPAdapter)
+            else None
+        )
+        if training is not None and expected_training is not None:
+            if not isinstance(training, expected_training):
+                raise TypeError(f"adapter requires {expected_training.__name__}")
+        train_rules = tuple(self._rules.predict(doc) for doc in train)
+        validation_rules = tuple(self._rules.predict(doc) for doc in validation)
+        settings = router or (self._router.config if self._router is not None else RouterTraining())
+        rows = _training_rows(train, train_rules, targets, settings)
+        positives = sum(target for _, target in rows)
+        if not positives or positives == len(rows):
+            raise ValueError("router training needs positive and negative residual lines")
+        _gold_prefixes(validation, targets)
+        for group in groups.values():
+            _gold_prefixes(validation, group)
         if work_dir is None:
             workspace = TemporaryDirectory(prefix="pseudopath-fit-")
             manager = workspace
@@ -205,8 +225,6 @@ class PseudoPath(Generic[ModelT]):
             self.model = self.adapter.fit(
                 self.model, train, validation, training=training, work_dir=path / "model"
             )
-            train_rules = tuple(self._rules.predict(doc) for doc in train)
-            validation_rules = tuple(self._rules.predict(doc) for doc in validation)
             if self._router is None or reset_router:
                 settings = router or (
                     self._router.config if self._router is not None else RouterTraining()
@@ -346,6 +364,13 @@ class PseudoPath(Generic[ModelT]):
         manifest = json.loads((source / "manifest.json").read_text(encoding="utf-8"))
         if manifest.get("format_version") != _FORMAT_VERSION:
             raise ValueError("unsupported PseudoPath artifact format")
+        thresholds = manifest.get("thresholds")
+        if not isinstance(thresholds, dict) or set(thresholds) != _PROFILES - {"all-lines"}:
+            raise ValueError("artifact has incomplete calibrated profiles")
+        for value in thresholds.values():
+            if isinstance(value, str):
+                raise ValueError("artifact thresholds must be numeric")
+            _routing_value(value)
         preset = manifest.get("preset")
         if adapter is None and model_loader is None:
             if preset is None:
