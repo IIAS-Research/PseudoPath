@@ -1,0 +1,2 @@
+{"text":"Note pour Emma Girard\nAucun symptome signale.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":21,"label":"NOM"}]}
+{"text":"Note pour Adam Robert\nControle clinique normal.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":21,"label":"NOM"}]}

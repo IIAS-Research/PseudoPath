@@ -1,0 +1,8 @@
+{"text":"Note pour Luc Martin\nAucun symptome signale.","entities":[{"start":10,"end":13,"label":"PRENOM"},{"start":14,"end":20,"label":"NOM"}]}
+{"text":"Note pour Nina Moreau\nControle clinique normal.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":21,"label":"NOM"}]}
+{"text":"Note pour Hugo Bernard\nRendez-vous confirme.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":22,"label":"NOM"}]}
+{"text":"Note pour Lea Dubois\nBilan sans anomalie.","entities":[{"start":10,"end":13,"label":"PRENOM"},{"start":14,"end":20,"label":"NOM"}]}
+{"text":"Note pour Omar Petit\nSuivi prevu demain.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":20,"label":"NOM"}]}
+{"text":"Note pour Ines Laurent\nExamen termine.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":22,"label":"NOM"}]}
+{"text":"Note pour Paul Garnier\nEtat stable.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":22,"label":"NOM"}]}
+{"text":"Note pour Sara Lambert\nObservations banales.","entities":[{"start":10,"end":14,"label":"PRENOM"},{"start":15,"end":22,"label":"NOM"}]}
