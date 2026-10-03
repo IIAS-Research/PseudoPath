@@ -6,6 +6,7 @@ import pytest
 
 from pseudopath._routing import EntityPrediction
 from pseudopath.adapters._common import score_predictions
+from pseudopath.adapters.edsnlp import EdsNLPAdapter, _neural_only
 
 
 @pytest.mark.parametrize(
@@ -48,3 +49,32 @@ def test_custom_metric_receives_filtered_offset_entities_and_requires_a_finite_s
     assert score_predictions(documents, predictions, metric=custom_metric, labels={"NOM"}) == -2.5
     with pytest.raises(ValueError, match="finite"):
         score_predictions(documents, predictions, metric=lambda gold, predictions: float("nan"))
+
+
+def test_transformer_pipeline_contains_only_neural_components() -> None:
+    class Pipeline:
+        pipe_names = ("normalizer", "ner")
+
+    _neural_only(Pipeline())
+
+    class PipelineWithRules:
+        pipe_names = ("normalizer", "ner", "clean")
+
+    with pytest.raises(ValueError, match="only normalizer and ner"):
+        _neural_only(PipelineWithRules())
+
+
+def test_transformer_output_requires_ner_span_group() -> None:
+    pytest.importorskip("torch")
+    document = SimpleNamespace(spans={})
+    model = SimpleNamespace(
+        pipe_names=("normalizer", "ner"),
+        train=lambda _training: None,
+        make_doc=lambda _text: document,
+        pipe=iter,
+    )
+    adapter = EdsNLPAdapter()
+    with pytest.raises(KeyError, match="pseudo-ml"):
+        adapter.predict(model, ["No entity."])
+    document.spans["pseudo-ml"] = ()
+    assert adapter.predict(model, ["No entity."]) == ((),)

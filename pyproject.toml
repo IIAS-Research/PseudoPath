@@ -22,6 +22,7 @@ Documentation = "https://iias-research.github.io/PseudoPath/"
 Issues = "https://github.com/IIAS-Research/PseudoPath/issues"
 
 [project.optional-dependencies]
+transformer = ["edsnlp[ml]>=0.17,<0.18", "sentencepiece>=0.1.96"]
 test = ["pytest>=8,<10"]
 
 [tool.setuptools.packages.find]

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Protocol, TypeVar
 
 from .._routing import EntityPrediction
+from .edsnlp import EdsNLPAdapter
 from .spacy import SpacyNERAdapter
 
 if TYPE_CHECKING:
@@ -44,4 +45,4 @@ class NERAdapter(Protocol[ModelT]):
         ...
 
 
-__all__ = ["NERAdapter", "SpacyNERAdapter"]
+__all__ = ["EdsNLPAdapter", "NERAdapter", "SpacyNERAdapter"]

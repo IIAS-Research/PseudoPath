@@ -1,7 +1,14 @@
 """Train NER models and route clinical note lines with PseudoPath."""
 
-from .adapters import NERAdapter, SpacyNERAdapter
+from .adapters import EdsNLPAdapter, NERAdapter, SpacyNERAdapter
 from .data import read_jsonl
-from .training import Tok2VecTraining
+from .training import Tok2VecTraining, TransformerTraining
 
-__all__ = ["NERAdapter", "SpacyNERAdapter", "Tok2VecTraining", "read_jsonl"]
+__all__ = [
+    "EdsNLPAdapter",
+    "NERAdapter",
+    "SpacyNERAdapter",
+    "Tok2VecTraining",
+    "TransformerTraining",
+    "read_jsonl",
+]
