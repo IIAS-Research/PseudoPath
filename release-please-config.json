@@ -6,7 +6,14 @@
       "package-name": "pseudopath",
       "initial-version": "1.0.0",
       "include-component-in-tag": false,
-      "include-v-in-tag": true
+      "include-v-in-tag": true,
+      "extra-files": [
+        {
+          "type": "yaml",
+          "path": "CITATION.cff",
+          "jsonpath": "$.version"
+        }
+      ]
     }
   }
 }

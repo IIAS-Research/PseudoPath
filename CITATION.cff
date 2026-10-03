@@ -1,0 +1,54 @@
+cff-version: 1.2.0
+message: "If you use PseudoPath in your research, please cite this software using these metadata."
+type: software
+title: "PseudoPath"
+version: "1.0.0"
+abstract: >-
+  PseudoPath is a Python package for detecting identifying entities in clinical
+  text. It combines fixed rules adapted from EDS-Pseudo with a configurable
+  named-entity recognition model and a trained residual line router.
+  Recall-calibrated routing presets balance detection quality and CPU
+  throughput. The package supports model training, custom model integration,
+  spaCy span predictions, and saving and loading trained pipelines.
+authors:
+  - given-names: Rudy
+    family-names: Merieux
+    orcid: "https://orcid.org/0009-0004-6643-8555"
+    affiliation: >-
+      IIAS – Institute of Artificial Intelligence in Health, CHU de Reims,
+      Université de Reims Champagne-Ardenne, Reims, France
+  - given-names: Youssouf
+    family-names: Dahlouk
+    orcid: "https://orcid.org/0009-0008-9683-6860"
+    affiliation: >-
+      IIAS – Institute of Artificial Intelligence in Health, CHU de Reims,
+      Université de Reims Champagne-Ardenne, Reims, France
+  - given-names: Rizlene
+    family-names: Banat
+    affiliation: >-
+      IIAS – Institute of Artificial Intelligence in Health, CHU de Reims,
+      Université de Reims Champagne-Ardenne, Reims, France
+  - given-names: Seydou
+    family-names: Kane
+    orcid: "https://orcid.org/0009-0000-5613-1809"
+    affiliation: >-
+      IIAS – Institute of Artificial Intelligence in Health, CHU de Reims,
+      Université de Reims Champagne-Ardenne, Reims, France
+  - given-names: Vincent
+    family-names: Vuiblet
+    orcid: "https://orcid.org/0000-0002-1959-326X"
+    affiliation: >-
+      IIAS – Institute of Artificial Intelligence in Health, CHU de Reims,
+      Université de Reims Champagne-Ardenne, Reims, France
+license: GPL-3.0-only
+# Adapted EDS-Pseudo code retains BSD-3-Clause terms; see THIRD_PARTY_NOTICES.md.
+repository-code: "https://github.com/IIAS-Research/PseudoPath"
+url: "https://iias-research.github.io/PseudoPath/"
+keywords:
+  - clinical text
+  - pseudonymization
+  - de-identification
+  - named-entity recognition
+  - selective inference
+  - CPU throughput
+  - routing
