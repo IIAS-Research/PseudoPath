@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "release-type": "python",
+      "package-name": "pseudopath",
+      "initial-version": "1.0.0",
+      "include-component-in-tag": false,
+      "include-v-in-tag": true
+    }
+  }
+}
