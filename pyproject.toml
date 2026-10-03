@@ -25,6 +25,7 @@ Issues = "https://github.com/IIAS-Research/PseudoPath/issues"
 [project.optional-dependencies]
 transformer = ["edsnlp[ml]>=0.17,<0.18", "sentencepiece>=0.1.96"]
 test = ["pytest>=8,<10"]
+docs = ["sphinx>=8,<9", "furo>=2024.8.6,<2027", "myst-parser>=4,<5", "sphinx-autobuild>=2024.10.3,<2027"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

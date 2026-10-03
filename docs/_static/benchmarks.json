@@ -1,0 +1,341 @@
+{
+  "defaults": {
+    "dataset": "reims",
+    "model": "distilcamembert",
+    "routing": "prudent"
+  },
+  "copy": {
+    "title": "Compare your configuration",
+    "description": "",
+    "datasetLabel": "Evaluation setting",
+    "modelLabel": "NER model",
+    "routingLabel": "Routing profile",
+    "baselineTitle": "Baseline",
+    "candidateTitle": "PseudoPath",
+    "routedModelLabel": "Model + trained routing",
+    "routingBadgeTemplate": "{profile} routing",
+    "baselineRoutingLabel": "All lines , No routing",
+    "summaryTemplate": "{speed}x CPU throughput , {recall} pp character recall , {precision} pp masking precision",
+    "deltaNote": "Quality differences are percentage points (pp). Speed is relative to the fixed baseline.",
+    "comparisonNote": "Compared with adapted EDS-Pseudo on all lines, so differences reflect both model choice and routing.",
+    "methodTitle": "Measurement conditions",
+    "methodText": "Throughput is the median of five full-pipeline runs on four physical AMD EPYC 9455 cores, processing one document at a time and excluding model loading. Models and routers are adapted to each dataset.",
+    "speedCaption": "CPU throughput vs. baseline",
+    "recallCaption": "Character recall vs. baseline",
+    "configurationLabel": "Configuration: 9 operating points",
+    "precisionCaption": "Masking precision vs. baseline"
+  },
+  "models": [
+    {
+      "id": "eds-pseudo",
+      "label": "Adapted EDS-Pseudo",
+      "description": "Full-size transformer",
+      "shortLabel": "EDS-Pseudo"
+    },
+    {
+      "id": "distilcamembert",
+      "label": "DistilCamemBERT",
+      "description": "Distilled transformer",
+      "shortLabel": "DistilCamemBERT"
+    },
+    {
+      "id": "spacy-tok2vec",
+      "label": "spaCy Tok2Vec",
+      "description": "Compact neural pipeline",
+      "shortLabel": "Tok2Vec"
+    }
+  ],
+  "routing": [
+    {
+      "id": "all-lines",
+      "label": "All lines",
+      "description": "Process the complete document."
+    },
+    {
+      "id": "prudent",
+      "label": "Prudent",
+      "description": "Calibrated for a 0.1 pp validation recall-loss budget."
+    },
+    {
+      "id": "balanced",
+      "label": "Balanced",
+      "description": "Calibrated for a 0.5 pp validation recall-loss budget."
+    },
+    {
+      "id": "fast",
+      "label": "Fast",
+      "description": "Calibrated for a 1.0 pp validation recall-loss budget."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "speed",
+      "label": "CPU throughput",
+      "description": "Documents processed per second.",
+      "unit": " docs/s",
+      "decimals": 2,
+      "deltaDecimals": 2,
+      "comparison": "ratio"
+    },
+    {
+      "id": "recall",
+      "label": "Character recall",
+      "description": "Alphanumeric identifier characters recovered.",
+      "unit": "%",
+      "decimals": 3,
+      "deltaDecimals": 3,
+      "comparison": "difference",
+      "scale": 100
+    },
+    {
+      "id": "precision",
+      "label": "Masking precision",
+      "description": "Precision of annotation-based masking.",
+      "unit": "%",
+      "decimals": 2,
+      "deltaDecimals": 2,
+      "comparison": "difference",
+      "scale": 100
+    },
+    {
+      "id": "f1",
+      "label": "Exact entity F1",
+      "description": "Exact matches of entity boundaries and labels.",
+      "unit": "%",
+      "decimals": 3,
+      "deltaDecimals": 3,
+      "comparison": "difference",
+      "scale": 100
+    }
+  ],
+  "datasets": [
+    {
+      "id": "reims",
+      "label": "Reims, with context",
+      "description": "Held-out Reims clinical notes with structured patient context.",
+      "baseline": {
+        "model": "eds-pseudo",
+        "routing": "all-lines"
+      },
+      "results": {
+        "eds-pseudo": {
+          "all-lines": {
+            "recall": 98.86186966686842,
+            "precision": 98.56941699897055,
+            "f1": 97.51163453319404,
+            "speed": 4.55156060529884
+          },
+          "prudent": {
+            "recall": 98.61501762381172,
+            "precision": 98.64662725265332,
+            "f1": 97.1996386630533,
+            "speed": 7.458072468872438
+          },
+          "balanced": {
+            "recall": 98.51295379831714,
+            "precision": 98.80846099822638,
+            "f1": 97.15400723396155,
+            "speed": 8.686807917979639
+          },
+          "fast": {
+            "recall": 98.31713366800774,
+            "precision": 98.9902972947137,
+            "f1": 97.12432638657064,
+            "speed": 9.24703035957659
+          }
+        },
+        "distilcamembert": {
+          "all-lines": {
+            "recall": 98.86780361021113,
+            "precision": 99.0088066459871,
+            "f1": 97.65276061959517,
+            "speed": 7.641628408377392
+          },
+          "prudent": {
+            "recall": 98.81677169746384,
+            "precision": 98.80856315564627,
+            "f1": 97.59619952494063,
+            "speed": 8.963475239261404
+          },
+          "balanced": {
+            "recall": 98.31357330200211,
+            "precision": 98.81903853035907,
+            "f1": 97.29035938391328,
+            "speed": 11.249679609828222
+          },
+          "fast": {
+            "recall": 98.07384199095667,
+            "precision": 99.15647760406043,
+            "f1": 97.34166945067533,
+            "speed": 14.472292463291915
+          }
+        },
+        "spacy-tok2vec": {
+          "all-lines": {
+            "recall": 98.21981699718731,
+            "precision": 97.34412307837071,
+            "f1": 95.73069831213654,
+            "speed": 35.036013058284006
+          },
+          "prudent": {
+            "recall": 98.14148894506354,
+            "precision": 97.48664929798295,
+            "f1": 95.66411057464735,
+            "speed": 41.33352706686232
+          },
+          "balanced": {
+            "recall": 98.03349117622625,
+            "precision": 97.91496272062396,
+            "f1": 95.90393469077793,
+            "speed": 44.642862145264175
+          },
+          "fast": {
+            "recall": 97.87327470597312,
+            "precision": 98.50338023458589,
+            "f1": 96.0609668968802,
+            "speed": 45.92829500261209
+          }
+        }
+      }
+    },
+    {
+      "id": "parhaf",
+      "label": "PARHAF, without context",
+      "description": "Held-out PARHAF reports about fictitious patients, without structured context.",
+      "baseline": {
+        "model": "eds-pseudo",
+        "routing": "all-lines"
+      },
+      "results": {
+        "eds-pseudo": {
+          "all-lines": {
+            "recall": 96.72793093845725,
+            "precision": 95.32107574094401,
+            "f1": 93.48230912476723,
+            "speed": 3.5558002367142274
+          },
+          "prudent": {
+            "recall": 96.82539682539682,
+            "precision": 98.86266704577766,
+            "f1": 93.4762348555452,
+            "speed": 5.736965445705064
+          },
+          "balanced": {
+            "recall": 96.54692286271234,
+            "precision": 98.8876212207644,
+            "f1": 93.4640522875817,
+            "speed": 8.016049833222333
+          },
+          "fast": {
+            "recall": 96.36591478696742,
+            "precision": 98.84318766066839,
+            "f1": 93.32087809434843,
+            "speed": 9.230791426763496
+          }
+        },
+        "distilcamembert": {
+          "all-lines": {
+            "recall": 96.99248120300751,
+            "precision": 98.86460403065568,
+            "f1": 94.27107591988822,
+            "speed": 6.544128070610416
+          },
+          "prudent": {
+            "recall": 96.78362573099415,
+            "precision": 98.93253629376602,
+            "f1": 94.26038264115725,
+            "speed": 8.618628167756642
+          },
+          "balanced": {
+            "recall": 96.37983848510164,
+            "precision": 98.80102769055095,
+            "f1": 94.11214953271029,
+            "speed": 12.823038348188758
+          },
+          "fast": {
+            "recall": 96.00389863547758,
+            "precision": 98.95235361653272,
+            "f1": 93.91385767790261,
+            "speed": 14.811470946869775
+          }
+        },
+        "spacy-tok2vec": {
+          "all-lines": {
+            "recall": 94.66722361459203,
+            "precision": 98.22305691996533,
+            "f1": 92.35818096577589,
+            "speed": 26.72665411603053
+          },
+          "prudent": {
+            "recall": 94.66722361459203,
+            "precision": 98.40787378781299,
+            "f1": 92.3076923076923,
+            "speed": 28.43855159467304
+          },
+          "balanced": {
+            "recall": 94.66722361459203,
+            "precision": 98.40787378781299,
+            "f1": 92.3076923076923,
+            "speed": 34.30022244952144
+          },
+          "fast": {
+            "recall": 94.40267335004177,
+            "precision": 98.50355949440652,
+            "f1": 92.19924812030077,
+            "speed": 39.710716711164665
+          }
+        }
+      }
+    }
+  ],
+  "animation": {
+    "durationMs": 650,
+    "flowBaselineMs": 1200,
+    "particles": {
+      "count": 24,
+      "tileWidthPx": 256,
+      "minOpacity": 0.25,
+      "maxOpacity": 0.65,
+      "fullOpacityAt": 12
+    },
+    "routingDurationMs": 350
+  },
+  "configurations": [
+    {
+      "model": "eds-pseudo",
+      "routing": "prudent"
+    },
+    {
+      "model": "eds-pseudo",
+      "routing": "balanced"
+    },
+    {
+      "model": "eds-pseudo",
+      "routing": "fast"
+    },
+    {
+      "model": "distilcamembert",
+      "routing": "prudent"
+    },
+    {
+      "model": "distilcamembert",
+      "routing": "balanced"
+    },
+    {
+      "model": "distilcamembert",
+      "routing": "fast"
+    },
+    {
+      "model": "spacy-tok2vec",
+      "routing": "prudent"
+    },
+    {
+      "model": "spacy-tok2vec",
+      "routing": "balanced"
+    },
+    {
+      "model": "spacy-tok2vec",
+      "routing": "fast"
+    }
+  ]
+}

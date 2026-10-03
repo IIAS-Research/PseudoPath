@@ -1,0 +1,12 @@
+{% extends "!sidebar/brand.html" %}
+{% block brand_content %}
+  <div class="flow-partners">
+    <img src="{{ pathto('_static/logos/iias.svg', 1) }}" alt="IIAS" width="84" height="84">
+    <div class="flow-partner-stack">
+      <img src="{{ pathto('_static/logos/urca.png', 1) }}" alt="Université de Reims Champagne-Ardenne" width="51" height="28">
+      <img src="{{ pathto('_static/logos/chu-reims.png', 1) }}" alt="CHU de Reims" width="42" height="42">
+    </div>
+  </div>
+  <span class="sidebar-brand-text">Foc<span>alias</span></span>
+  <span class="flow-tagline">Fast clinical de-identification</span>
+{% endblock %}
