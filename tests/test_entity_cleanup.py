@@ -20,7 +20,7 @@ def test_label_specific_boundaries_and_empty_spans() -> None:
         assert [span.text for span in spans] == ([] if expected is None else [expected])
 
 
-def test_selection_prefers_longest_leftmost_and_input_order_on_ties() -> None:
+def test_selection_unions_overlaps_and_uses_longest_original_label() -> None:
     doc = spacy.blank("fr").make_doc("Alice Bob Claire")
     spans = (
         Span(doc, 0, 2, label="FIRST"),
@@ -30,6 +30,11 @@ def test_selection_prefers_longest_leftmost_and_input_order_on_ties() -> None:
         Span(doc, 0, 1, label="SHORT"),
     )
     assert [(span.text, span.label_) for span in clean_and_select(spans)] == [
-        ("Alice Bob", "FIRST"),
-        ("Claire", "TAIL"),
+        ("Alice Bob Claire", "OTHER"),
     ]
+
+
+def test_cleaning_preserves_partially_overlapping_rule_coverage():
+    doc = spacy.blank("fr").make_doc("Luc Martin Dupont")
+    spans = clean_and_select((Span(doc, 0, 2, label="PRENOM"), Span(doc, 1, 3, label="NOM")))
+    assert [(span.text, span.label_) for span in spans] == [("Luc Martin Dupont", "NOM")]

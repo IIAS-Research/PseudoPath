@@ -74,9 +74,17 @@ class _FixedRules:
 
     def _context_spans(self, document: Doc, context: Mapping[str, Sequence[str]]) -> list[Span]:
         """Match known patient terms on the normalized document."""
+        if not isinstance(context, Mapping) or any(
+            not isinstance(label, str)
+            or not label
+            or not isinstance(values, (list, tuple))
+            or any(not isinstance(value, str) for value in values)
+            for label, values in context.items()
+        ):
+            raise ValueError("context must map nonempty labels to lists of strings")
         terms = {label: list(values) for label, values in context.items()}
         if "EMAIL" in terms:
-            terms["MAIL"] = terms.pop("EMAIL")
+            terms.setdefault("MAIL", []).extend(terms.pop("EMAIL"))
         if not terms:
             return []
 
@@ -84,7 +92,7 @@ class _FixedRules:
             label: {
                 variant
                 for value in values
-                if len(value.translate(_PUNCT_TO_SPACE).strip()) > 2
+                if value.translate(_PUNCT_TO_SPACE).strip()
                 for variant in (value, value.title(), value.upper())
             }
             for label, values in terms.items()
@@ -102,7 +110,7 @@ class _FixedRules:
         document = self._nlp(self.make_doc(source.text))
         if document.text != source.text:
             raise RuntimeError("rule normalization changed the document text")
-        context: Mapping[str, Sequence[str]] = source._.context or {}
+        context = source._.context if source._.context is not None else {}
         spans = [
             *self._simple(document, as_spans=True),
             *self._address_spans(document),

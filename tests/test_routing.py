@@ -51,7 +51,7 @@ def test_merge_prefers_length_leftmost_then_model() -> None:
     assert merge_spans(
         (EntityPrediction(1, 5, "MODEL"),),
         (EntityPrediction(0, 4, "RULE"),),
-    ) == (EntityPrediction(0, 4, "RULE"),)
+    ) == (EntityPrediction(0, 5, "RULE"),)
     assert merge_spans(
         (EntityPrediction(1, 5, "MODEL"),),
         (EntityPrediction(0, 6, "RULE"),),
@@ -182,3 +182,11 @@ def test_recall_group_protects_rare_hospital_label() -> None:
     )
     assert global_profiles["prudent"] == 0.9
     assert grouped_profiles == {"prudent": 0.2, "balanced": 0.2, "fast": 0.2}
+
+
+def test_merge_preserves_transitive_coverage_and_keeps_adjacent_entities():
+    spans = merge_spans(
+        (EntityPrediction(0, 6, "NOM"), EntityPrediction(9, 12, "PRENOM")),
+        (EntityPrediction(4, 10, "MAIL"), EntityPrediction(12, 15, "TEL")),
+    )
+    assert spans == (EntityPrediction(0, 12, "NOM"), EntityPrediction(12, 15, "TEL"))

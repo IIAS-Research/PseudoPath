@@ -6,7 +6,7 @@ import re
 import string
 from collections.abc import Sequence
 
-from edsnlp.utils.filter import filter_spans
+from ._routing import EntityPrediction, merge_spans
 from spacy.tokens import Span
 
 _ALL_PUNCT = re.escape(string.punctuation)
@@ -22,7 +22,7 @@ _PRENOM = re.compile(rf"^[\s{_ALL_PUNCT}]*(.*?)[\s{_NO_DOT}]*$", re.DOTALL)
 
 
 def clean_and_select(spans: Sequence[Span]) -> tuple[Span, ...]:
-    """Trim punctuation, then keep the longest leftmost non-overlapping spans."""
+    """Trim punctuation, then union overlaps while preserving detected coverage."""
     cleaned = []
     for span in spans:
         if not span.text.strip(_EMPTY_CHARS):
@@ -36,4 +36,12 @@ def clean_and_select(spans: Sequence[Span]) -> tuple[Span, ...]:
         if result is not None:
             cleaned.append(result)
 
-    return tuple(filter_spans(cleaned))
+    if not cleaned:
+        return ()
+    merged = merge_spans(
+        tuple(EntityPrediction(span.start_char, span.end_char, span.label_) for span in cleaned),
+        (),
+    )
+    return tuple(
+        cleaned[0].doc.char_span(span.start, span.end, label=span.label) for span in merged
+    )

@@ -148,29 +148,42 @@ def merge_spans(
     model_spans: Sequence[EntityPrediction],
     rule_spans: Sequence[EntityPrediction],
 ) -> tuple[EntityPrediction, ...]:
-    """Resolve overlaps by keeping longer spans, then earlier ones.
+    """Union overlapping ranges without losing detected characters.
 
-    For identical boundaries, prefer the model's label over the rule's label.
-    Return the selected spans in document order.
+    Label each union using the longest original span, then the earliest.
+    Identical boundaries prefer the model label. Adjacent ranges stay separate.
     """
-    candidates = [
-        *((span, 0) for span in model_spans),
-        *((span, 1) for span in rule_spans),
-    ]
-    candidates.sort(
-        key=lambda item: (
-            -(item[0].end - item[0].start),
-            item[0].start,
-            item[1],
-            item[0].label,
-            item[0].end,
+    candidates = [(span, 0) for span in model_spans] + [(span, 1) for span in rule_spans]
+    candidates.sort(key=lambda item: (item[0].start, item[0].end))
+    components: list[list[tuple[EntityPrediction, int]]] = []
+    end = -1
+    for candidate in candidates:
+        span, _source = candidate
+        if not components or span.start >= end:
+            components.append([candidate])
+            end = span.end
+        else:
+            components[-1].append(candidate)
+            end = max(end, span.end)
+    result = []
+    for component in components:
+        winner, _source = min(
+            component,
+            key=lambda item: (
+                -(item[0].end - item[0].start),
+                item[0].start,
+                item[1],
+                item[0].label,
+            ),
         )
-    )
-    selected: list[EntityPrediction] = []
-    for span, _source in candidates:
-        if not any(span.start < current.end and current.start < span.end for current in selected):
-            selected.append(span)
-    return tuple(sorted(selected))
+        result.append(
+            EntityPrediction(
+                min(item[0].start for item in component),
+                max(item[0].end for item in component),
+                winner.label,
+            )
+        )
+    return tuple(result)
 
 
 def route_document(

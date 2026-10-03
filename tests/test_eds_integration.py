@@ -53,3 +53,53 @@ def test_training_reader_preserves_gold_spans_when_splitting() -> None:
         ("Luc Martin", "NOM")
     ]
     assert all(not part.spans["pseudo-ml"] for part in parts[1:])
+
+
+def test_context_short_names_and_email_alias_preserve_all_terms():
+    rules = _FixedRules()
+    doc = rules.make_doc("Li Ng Wu first@example.fr second@example.fr")
+    context = {
+        "NOM": ["Li", "Ng", "Wu"],
+        "MAIL": ["first@example.fr"],
+        "EMAIL": ["second@example.fr"],
+    }
+    doc._.context = context
+    assert [(doc.text[e.start : e.end], e.label) for e in rules.predict(doc)] == [
+        ("Li", "NOM"),
+        ("Ng", "NOM"),
+        ("Wu", "NOM"),
+        ("first@example.fr", "MAIL"),
+        ("second@example.fr", "MAIL"),
+    ]
+    # Exercise the alias itself without relying on the built-in email regex.
+    doc = rules.make_doc("Martin Dupont")
+    doc._.context = {"MAIL": ["Martin"], "EMAIL": ["Dupont"]}
+    assert [doc.text[e.start : e.end] for e in rules.predict(doc)] == ["Martin", "Dupont"]
+    assert context["MAIL"] == ["first@example.fr"]
+
+
+def test_invalid_context_is_rejected():
+    import pytest
+
+    rules = _FixedRules()
+    for context in ({"PRENOM": "Luc"}, [], {"NOM": [123]}, {"": ["Luc"]}):
+        doc = rules.make_doc("Luc")
+        doc._.context = context
+        with pytest.raises(ValueError, match="context"):
+            rules.predict(doc)
+
+
+def test_international_phone_formats():
+    rules = _FixedRules()
+    for phone in (
+        "+33 6 12 34 56 78",
+        "0033 6 12 34 56 78",
+        "+33 (0)6 12 34 56 78",
+        "06 12 34 56 78",
+        "06.12.34.56.78",
+        "06-12-34-56-78",
+    ):
+        doc = rules.make_doc("Contact : " + phone + ".")
+        assert [(doc.text[e.start : e.end], e.label) for e in rules.predict(doc)] == [
+            (phone, "TEL")
+        ]
