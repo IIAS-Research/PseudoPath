@@ -7,7 +7,7 @@
   font-display: swap;
 }
 .sidebar-brand { padding-top: 1.5rem; }
-.flow-partners {
+.pseudopath-partners {
   display: grid;
   grid-template-columns: 5.25rem 3.1875rem;
   justify-content: center;
@@ -16,9 +16,9 @@
   width: 100%;
   margin-bottom: 1.25rem;
 }
-.flow-partners img { display: block; width: 100%; height: auto; }
-.flow-partner-stack { display: grid; justify-items: center; gap: .625rem; }
-.flow-partner-stack img:last-child { max-width: 2.625rem; }
+.pseudopath-partners img { display: block; width: 100%; height: auto; }
+.pseudopath-partner-stack { display: grid; justify-items: center; gap: .625rem; }
+.pseudopath-partner-stack img:last-child { max-width: 2.625rem; }
 .sidebar-brand-text, .mobile-header .brand, h1, h2, h3 {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 600;
@@ -26,7 +26,7 @@
 }
 .sidebar-brand-text { color: var(--color-foreground-primary); font-size: 2rem; }
 .sidebar-brand-text span { color: var(--color-brand-primary); }
-.flow-tagline {
+.pseudopath-tagline {
   color: var(--color-foreground-secondary);
   font-size: .75rem;
   line-height: 1.6;
@@ -40,25 +40,25 @@ a:focus-visible { outline: 2px solid var(--color-brand-content); outline-offset:
 .content .highlight { border: 1px solid var(--color-background-border); border-radius: 8px; }
 .content .highlight pre { padding: 1rem; line-height: 1.65; }
 .content :is(code.literal, .sig) { overflow-wrap: anywhere; }
-.content section:has(> #flow-benchmark) > h1 + p strong {
+.content section:has(> #pseudopath-benchmark) > h1 + p strong {
   color: var(--color-brand-primary);
   font-weight: 700;
 }
-.flow-workflow > a {
+.pseudopath-workflow > a {
   display: block;
   background: #fff;
   border: 1px solid var(--color-background-border);
   border-radius: 8px;
   padding: .5rem;
 }
-.flow-workflow img { display: block; width: 100%; height: auto; }
-.flow-workflow figcaption { font-size: .875rem; line-height: 1.65; }
+.pseudopath-workflow img { display: block; width: 100%; height: auto; }
+.pseudopath-workflow figcaption { font-size: .875rem; line-height: 1.65; }
 .sidebar-tree .current-page > .reference {
   color: var(--color-brand-content);
   background: var(--color-background-secondary);
   box-shadow: inset 3px 0 var(--color-brand-primary);
 }
-.flow-home-link {
+.pseudopath-home-link {
   display: flex;
   align-items: center;
   gap: .65rem;
@@ -67,14 +67,14 @@ a:focus-visible { outline: 2px solid var(--color-brand-content); outline-offset:
   font-weight: 650;
   text-decoration: none;
 }
-.flow-home-link svg { width: 1.1rem; height: 1.1rem; }
-.flow-home-link:hover, .flow-home-link[aria-current="page"] {
+.pseudopath-home-link svg { width: 1.1rem; height: 1.1rem; }
+.pseudopath-home-link:hover, .pseudopath-home-link[aria-current="page"] {
   background: var(--color-background-secondary);
   color: var(--color-brand-content);
   box-shadow: inset 3px 0 var(--color-brand-primary);
 }
 @media (max-width: 63em) {
-  #__navigation:not(:checked) ~ .page .flow-partners { display: none; }
+  #__navigation:not(:checked) ~ .page .pseudopath-partners { display: none; }
 }
 
 /* Sidebar links and active page styling. */
@@ -101,9 +101,9 @@ a:focus-visible { outline: 2px solid var(--color-brand-content); outline-offset:
   font-weight: 650;
 }
 .sidebar-tree .reference:focus-visible { outline-offset: 1px; }
-.flow-home-link { margin: 0 0 .8rem; padding: .65rem .75rem; border-radius: 10px; font-size: .9rem; }
-.flow-home-link:hover { box-shadow: none; }
-.flow-home-link[aria-current="page"] { color: #fff; background: #4b46a6; box-shadow: 0 4px 12px rgb(75 70 166 / 18%); }
+.pseudopath-home-link { margin: 0 0 .8rem; padding: .65rem .75rem; border-radius: 10px; font-size: .9rem; }
+.pseudopath-home-link:hover { box-shadow: none; }
+.pseudopath-home-link[aria-current="page"] { color: #fff; background: #4b46a6; box-shadow: 0 4px 12px rgb(75 70 166 / 18%); }
 .sidebar-tree .toctree-l2 > .reference { font-size: .77rem; padding-left: 1.1rem; color: var(--color-foreground-secondary); }
 .sidebar-tree .toctree-l3 > .reference { font-size: .74rem; padding-left: 1.4rem; }
 .sidebar-search-container { margin: .5rem .8rem 0; }

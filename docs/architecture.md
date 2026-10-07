@@ -15,7 +15,7 @@ Open it to inspect the steps at full size.
 :width: 100%
 :target: _static/figures/figure1-workflow.svg
 :name: pseudopath-workflow
-:figclass: flow-workflow
+:figclass: pseudopath-workflow
 
 PseudoPath workflow. **A:** adapt candidate models,
 train the residual-line router, calibrate profiles, and select a configuration.

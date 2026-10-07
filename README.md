@@ -9,9 +9,9 @@ Three integrated presets keep the common workflow short: `camembert`,
 adapter without changing the rules or router.
 
 Compare CPU throughput and detection quality across models and routing
-presets in the [interactive benchmark](https://iias-research.github.io/PseudoPath/#flow-benchmark).
+presets in the [interactive benchmark](https://iias-research.github.io/PseudoPath/#pseudopath-benchmark).
 
-[![Animated comparison of PseudoPath models and routing presets](docs/_static/benchmark.gif)](https://iias-research.github.io/PseudoPath/#flow-benchmark)
+[![Animated comparison of PseudoPath models and routing presets](docs/_static/benchmark.gif)](https://iias-research.github.io/PseudoPath/#pseudopath-benchmark)
 
 Python 3.11 or newer is required. Install from PyPI:
 

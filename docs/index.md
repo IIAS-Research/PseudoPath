@@ -9,7 +9,7 @@ and use a **trained router** to send it **only relevant lines**, balancing detec
 quality with processing speed.
 
 ```{raw} html
-<section id="flow-benchmark" class="flow-benchmark" aria-label="Performance comparison" data-config="_static/benchmarks.json">
+<section id="pseudopath-benchmark" class="pseudopath-benchmark" aria-label="Performance comparison" data-config="_static/benchmarks.json">
   <p>Explore measured performance with JavaScript enabled.</p>
 </section>
 ```
