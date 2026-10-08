@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/IIAS-Research/PseudoPath/compare/v0.1.0...v0.1.1) (2026-10-07)
+
+
+### Documentation
+
+* replace legacy name with PseudoPath ([9bdeebc](https://github.com/IIAS-Research/PseudoPath/commit/9bdeebc6139048f867c177b74da57cd43aa039bf))
+
 ## 0.1.0 (2026-10-03)
 
 
